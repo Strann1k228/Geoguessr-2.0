@@ -1,8 +1,6 @@
 from flask import *
 import sys
 import requests
-import pygame
-
 
 
 api_server = "http://static-maps.yandex.ru/1.x/"
@@ -17,7 +15,6 @@ params = {
     "spn": ",".join([delta, delta]),
     "l": map_type
 }
-
 
 
 def create_map(pr):
@@ -125,10 +122,11 @@ def LEFT():
     print(params)
     return render_template('base.html', text=f"{delta}")
 
+
 @app.route("/MAP", methods=["POST"])
 def change_map():
     global map_type
-    map_type = m_types[(m_types.index(map_type) + 1) % 3]
+    map_type = m_types[(m_types.index(map_type) + 1) % 2]
     print(map_type)
     params = {
         "ll": ",".join([lon, lat]),
@@ -142,5 +140,4 @@ def change_map():
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
-
 
