@@ -3,37 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Типо GeoGuesser</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
     <body>
     <header>
-        <h2>GeoGuesser</h2>
-        <h3>{{text}}</h3>
+        <h1>GEOGUESSR 2.0</h1>
     </header>
     <p><img src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
-    <img src="static/map0.png" width="600" height="450" alt="разрабы дауны"/></p>
+    <img style="margin-left: 120px;" src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
+    </p>
 <p>
-    <form action="/1" method="post">
-  <button name="forwardBtn" type="submit">+</button>
+<form action="/1" method="post">
+  <button class="but" name="PlusBtn" type="submit"style="position: absolute; top: 585px; left: 0px;">+</button>
 </form>
-    <form action="/2" method="post">
-  <button name="forwardBtn" type="submit">-</button>
+<form action="/2" method="post">
+  <button class="but" name="MinusBtn" type="submit" style="position: absolute; top: 585px; left: 35px;">-</button>
 </form>
     <form action="/UP" method="post">
-  <button name="forwardBtn" type="submit">/\</button>
+  <button class="but" name="UpBtn" type="submit" style="position: absolute; top: 585px; left: 180px;">/\</button>
 </form>
     <form action="/RIGHT" method="post">
-  <button name="forwardBtn" type="submit">></button>
+  <button class="but" name="RBtn" type="submit" style="position: absolute; top: 620px; left: 215px;">></button>
 </form>
     <form action="/DOWN" method="post">
-  <button name="forwardBtn" type="submit">\/</button>
+  <button class="but" name="DownBtn" type="submit" style="position: absolute; top: 655px; left: 180px;">\/</button>
 </form>
     <form action="/LEFT" method="post">
-  <button name="forwardBtn" type="submit"><</button>
+  <button class="but" name="LBtn" type="submit" style="position: absolute; top: 620px; left: 145px;"><</button>
 </form>
     <form action="/MAP" method="post">
-  <button name="forwardBtn" type="submit">change map</button>
+  <button class="map-but" name="MapBtn" type="submit"style="position: absolute; top: 620px; left: 0px;">change map</button>
 </form>
-    </p>
+    <form action="/MARK" method="post">
+  <button  name="MarkBtn" type="submit" style="position: absolute; top: 700px; left: 0px;">PUT MARK</button>
+</form>
+    <form action="/MARK_R" method="post">
+  <button  name="MarkRemoveBtn" type="submit" style="position: absolute; top: 740px; left: 0px;">REMOVE MARK</button>
+</form>
+</p>
     </body>
 </html>

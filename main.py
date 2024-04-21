@@ -10,10 +10,12 @@ lat = "57.619114"
 delta = "0.001"
 map_type = "map"
 m_types = ["map", "sat"]
+point = None
 params = {
     "ll": ",".join([lon, lat]),
     "spn": ",".join([delta, delta]),
-    "l": map_type
+    "l": map_type,
+    "pt": point
 }
 
 
@@ -23,8 +25,6 @@ def create_map(pr):
         print("Ошибка выполнения запроса:")
         print("Http статус:", response.status_code, "(", response.reason, ")")
         sys.exit(1)
-
-    # Запишем полученное изображение в файл.
     map0_file = "map0.png"
     with open(f"static/{map0_file}", "wb") as file:
         file.write(response.content)
@@ -38,7 +38,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('base.html', text=f"nothing")
+    return render_template('base.html')
 
 @app.route("/2", methods=["POST"])
 def minus():
@@ -47,11 +47,11 @@ def minus():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 @app.route("/1", methods=["POST"])
 def plus():
@@ -60,11 +60,11 @@ def plus():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 
 @app.route("/UP", methods=["POST"])
@@ -74,11 +74,11 @@ def UP():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 
 @app.route("/DOWN", methods=["POST"])
@@ -88,11 +88,11 @@ def DOWN():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 
 @app.route("/RIGHT", methods=["POST"])
@@ -102,11 +102,11 @@ def RIGHT():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 
 @app.route("/LEFT", methods=["POST"])
@@ -116,11 +116,11 @@ def LEFT():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
 
 
 @app.route("/MAP", methods=["POST"])
@@ -131,11 +131,37 @@ def change_map():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-        "l": map_type
+        "l": map_type,
+        "pt": point
     }
     create_map(params)
-    print(params)
-    return render_template('base.html', text=f"{delta}")
+    return render_template('base.html')
+
+@app.route("/MARK", methods=["POST"])
+def place_mark():
+    global point, params
+    point = f"{params["ll"]},flag"
+    params = {
+        "ll": ",".join([lon, lat]),
+        "spn": ",".join([delta, delta]),
+        "l": map_type,
+        "pt": point
+    }
+    create_map(params)
+    return render_template('base.html')
+
+@app.route("/MARK_R", methods=["POST"])
+def remove_mark():
+    global point
+    point = None
+    params = {
+        "ll": ",".join([lon, lat]),
+        "spn": ",".join([delta, delta]),
+        "l": map_type,
+        "pt": point
+    }
+    create_map(params)
+    return render_template('base.html')
 
 
 if __name__ == '__main__':
