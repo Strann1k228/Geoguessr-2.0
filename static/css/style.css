@@ -1,0 +1,16 @@
+h1 {
+    text-align: center;
+    font-size: 30px;
+}
+
+.but{
+    width: 30px;
+    height: 30px;
+    border-radius: 40%;
+}
+
+.map-but{
+    width: 70px;
+    height: 35px;
+    border-radius: 20%;
+}
