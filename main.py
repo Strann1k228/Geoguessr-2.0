@@ -13,6 +13,7 @@ delta = "37.416"
 map_type = "map"
 m_types = ["map", "sat"]
 point = None
+img_path = "static/download.jpg"
 params = {
     "ll": ",".join([lon, lat]),
     "spn": ",".join([delta, delta]),
@@ -40,7 +41,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 @app.route("/-", methods=["POST"])
 def minus():
@@ -53,7 +54,7 @@ def minus():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 @app.route("/+", methods=["POST"])
 def plus():
@@ -66,7 +67,7 @@ def plus():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 
 @app.route("/UP", methods=["POST"])
@@ -80,7 +81,7 @@ def UP():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 
 @app.route("/DOWN", methods=["POST"])
@@ -94,7 +95,7 @@ def DOWN():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 
 @app.route("/RIGHT", methods=["POST"])
@@ -108,7 +109,7 @@ def RIGHT():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 
 @app.route("/LEFT", methods=["POST"])
@@ -122,7 +123,7 @@ def LEFT():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 
 @app.route("/MAP", methods=["POST"])
@@ -137,7 +138,7 @@ def change_map():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 @app.route("/MARK", methods=["POST"])
 def place_mark():
@@ -150,7 +151,7 @@ def place_mark():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
 
 @app.route("/MARK_R", methods=["POST"])
 def remove_mark():
@@ -164,10 +165,37 @@ def remove_mark():
         "pt": point
     }
     create_map(params)
-    return render_template('base.html')
+    return render_template('base.html', image_path=img_path)
+
+
+@app.route("/CHECK", methods=["POST"])
+def check():
+    global lat, lon, map_type, delta
+    lat, lon, map_type, delta = "57.843589", "65.996826", "map", "37.416"
+    params = {
+        "ll": ",".join([lon, lat]),
+        "spn": ",".join([delta, delta]),
+        "l": map_type,
+        "pt": point
+    }
+    create_map(params)
+    return render_template('base.html', image_path=img_path)
+
+@app.route("/NEXT", methods=["POST"])
+def next():
+    params = {
+        "ll": ",".join([lon, lat]),
+        "spn": ",".join([delta, delta]),
+        "l": map_type,
+        "pt": point
+    }
+    create_map(params)
+    open_random_map()
+    return render_template('base.html', image_path=img_path)
 
 
 def open_random_map():
+    global img_path
     # создание словаря стран и континентов
     continents, cont_and_countr = [], {}
     for file in os.listdir("static/map_continents"):
@@ -178,9 +206,28 @@ def open_random_map():
             countries.append(file)
         cont_and_countr[i] = countries
     print(cont_and_countr)
+    # выводим рандомный континент
+    main_cont = list(cont_and_countr.keys())[randint(0, len(list(cont_and_countr.keys())) - 1)]
+    print(main_cont)
+    cntrs = []
+    for cntr in os.listdir(f"static/map_continents/{main_cont}"):
+        cntrs.append(cntr)
+    # выводим рандомную страну, находящуюся на континенте
+    main_cntr = cntrs[randint(0, len(cntrs)) - 1]
+    print(main_cntr)
+    images = []
+    for img in os.listdir(f"static/map_continents/{main_cont}/{main_cntr}"):
+        images.append(img)
+    main_image = images[randint(0, len(images)) - 1]
+    print(main_image)
+    print(f"static/map_continents/{main_cont}/{main_cntr}/{main_image}")
+    if f"static/map_continents/{main_cont}/{main_cntr}/{main_image}" == img_path:
+        open_random_map()
+    else:
+        img_path = f"static/map_continents/{main_cont}/{main_cntr}/{main_image}"
 
-    # выводим рандомную страну
-    print(list(cont_and_countr.keys())[randint(0, len(list(cont_and_countr.keys())) - 1)])
+
+
 
 
 open_random_map()

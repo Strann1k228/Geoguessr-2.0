@@ -10,7 +10,7 @@
         <h1>GEOGUESSR 2.0</h1>
     </header>
     <p><img src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
-    <img style="margin-left: 120px;" src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
+    <img style="margin-left: 120px;" src="{{image_path}}" width="600" height="450" alt="разрабы дауны"/>
     </p>
 <p>
 <form action="/+" method="post">
@@ -39,6 +39,12 @@
 </form>
     <form action="/MARK_R" method="post">
   <button  name="MarkRemoveBtn" type="submit" style="position: absolute; top: 740px; left: 0px;">REMOVE MARK</button>
+</form>
+    <form action="/CHECK" method="post">
+  <button class="check-but" name="CheckBtn" type="submit" style="position: absolute; top: 540px; left: 540px;">CHECK</button>
+</form>
+    <form action="/NEXT" method="post">
+  <button class="next-but" name="CheckBtn" type="submit" style="position: absolute; top: 540px; left: 440px;">NEXT</button>
 </form>
 </p>
     </body>

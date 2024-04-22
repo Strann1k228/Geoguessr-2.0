@@ -14,3 +14,16 @@ h1 {
     height: 35px;
     border-radius: 20%;
 }
+
+.check-but{
+    height: 40px;
+    width: 70px;
+    border-radius: 20%;
+    background-color: #90EE90;
+}
+.next-but{
+    height: 40px;
+    width: 70px;
+    border-radius: 20%;
+    background-color: #FF8C00;
+}
