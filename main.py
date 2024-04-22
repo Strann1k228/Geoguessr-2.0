@@ -1,13 +1,15 @@
 from flask import *
 import sys
 import requests
+import os
+from random import *
 
 
 api_server = "http://static-maps.yandex.ru/1.x/"
 delta_l = ["0.0", "0.001", "0.002", "0.003", "0.006", "0.011", "0.021", "0.042", "0.083", "0.166", "0.332", "0.664", "1.327", "2.652", "5.295", "10.521", "20.523", "37.416"]
-lon = "39.904529"
-lat = "57.619114"
-delta = "0.001"
+lon = "65.996826"
+lat = "57.843589"
+delta = "37.416"
 map_type = "map"
 m_types = ["map", "sat"]
 point = None
@@ -40,7 +42,7 @@ app = Flask(__name__)
 def index():
     return render_template('base.html')
 
-@app.route("/2", methods=["POST"])
+@app.route("/-", methods=["POST"])
 def minus():
     global delta
     delta = delta_l[delta_l.index(delta) + 1] if delta_l.index(delta) != len(delta_l) - 1 else delta
@@ -53,7 +55,7 @@ def minus():
     create_map(params)
     return render_template('base.html')
 
-@app.route("/1", methods=["POST"])
+@app.route("/+", methods=["POST"])
 def plus():
     global delta
     delta = delta_l[delta_l.index(delta) - 1] if delta_l.index(delta) != 0 else delta
@@ -157,6 +159,7 @@ def remove_mark():
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
+
         "l": map_type,
         "pt": point
     }
@@ -164,6 +167,23 @@ def remove_mark():
     return render_template('base.html')
 
 
+def open_random_map():
+    # создание словаря стран и континентов
+    continents, cont_and_countr = [], {}
+    for file in os.listdir("static/map_continents"):
+        continents.append(file)
+    for i in continents:
+        countries = []
+        for file in os.listdir(f"static/map_continents/{i}"):
+            countries.append(file)
+        cont_and_countr[i] = countries
+    print(cont_and_countr)
+
+    # выводим рандомную страну
+    print(list(cont_and_countr.keys())[randint(0, len(list(cont_and_countr.keys())) - 1)])
+
+
+open_random_map()
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
-
