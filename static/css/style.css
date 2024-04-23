@@ -21,9 +21,16 @@ h1 {
     border-radius: 20%;
     background-color: #90EE90;
 }
+
 .next-but{
     height: 40px;
     width: 70px;
     border-radius: 20%;
     background-color: #FF8C00;
+}
+
+.result_text{
+    position: absolute;
+    top: 570px;
+    left: 545px;
 }

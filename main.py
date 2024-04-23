@@ -3,6 +3,7 @@ import sys
 import requests
 import os
 from random import *
+from geopy.distance import geodesic
 
 
 api_server = "http://static-maps.yandex.ru/1.x/"
@@ -13,12 +14,15 @@ delta = "37.416"
 map_type = "map"
 m_types = ["map", "sat"]
 point = None
+line = None
+p_coords, r_p_coords = None, None
 img_path = "static/download.jpg"
 params = {
     "ll": ",".join([lon, lat]),
     "spn": ",".join([delta, delta]),
     "l": map_type,
-    "pt": point
+    "pt": point,
+    "pl": line
 }
 
 
@@ -51,7 +55,8 @@ def minus():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -64,7 +69,8 @@ def plus():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -78,7 +84,8 @@ def UP():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -92,7 +99,8 @@ def DOWN():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -106,7 +114,8 @@ def RIGHT():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -120,7 +129,8 @@ def LEFT():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -135,7 +145,8 @@ def change_map():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -143,26 +154,27 @@ def change_map():
 @app.route("/MARK", methods=["POST"])
 def place_mark():
     global point, params
-    point = f"{params["ll"]},flag"
+    point = f"{params["ll"]},org"
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
 
 @app.route("/MARK_R", methods=["POST"])
 def remove_mark():
-    global point
-    point = None
+    global point, line
+    point, line = None, None
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
-
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     return render_template('base.html', image_path=img_path)
@@ -170,16 +182,31 @@ def remove_mark():
 
 @app.route("/CHECK", methods=["POST"])
 def check():
-    global lat, lon, map_type, delta
-    lat, lon, map_type, delta = "57.843589", "65.996826", "map", "37.416"
+    global lat, lon, map_type, delta, point, img_path, line, p_coords, r_p_coords
+    # lat, lon, map_type, delta = "57.843589", "65.996826", "map", "37.416"
+    if point is None:
+        print("!!!")
+    else:
+        print(point)
+        right_point = (f"{(img_path.split("/")[-1][0:-4]).split(",")[1]},{(img_path.split("/")[-1][0:-4]).split(",")[0]},comma")
+        line = f"c:47AB6BF0,{point[0:-4]},{right_point[0:-6]}"
+        p_coords = point[0:-4].split(",")[::-1]
+        r_p_coords = right_point[0:-6].split(",")[::-1]
+        print(str(geodesic(p_coords, r_p_coords)).split(".")[0])
+        result = str(geodesic(p_coords, r_p_coords)).split(".")[0]
+        if point != f"{point}~{right_point}":
+            point = f"{point}~{right_point}"
+        # params["pt"] = f"{point}~{right_point}
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
+    print(params)
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 @app.route("/NEXT", methods=["POST"])
 def next():
@@ -187,7 +214,8 @@ def next():
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point
+        "pt": point,
+        "pl": line
     }
     create_map(params)
     open_random_map()
