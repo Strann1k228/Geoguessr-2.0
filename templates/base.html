@@ -2,43 +2,43 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Типо GeoGuesser</title>
+    <title>Типо GeoGuessr</title>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
     <body>
     <header>
-        <h1>GEOGUESSR 2.0</h1>
+        <img style="margin-left: 570px; margin-top: 4px; margin-bottom: 4px;" src="static/GeoGuessr_logo.png" width="220" height="42" >
     </header>
-    <p><img src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
+    <p><img style="margin-left: 13px;" src="static/map0.png" width="600" height="450" alt="разрабы дауны"/>
     <img style="margin-left: 120px;" src="{{image_path}}" width="600" height="450" alt="разрабы дауны"/>
     </p>
 <p>
 <form action="/+" method="post">
-  <button class="but" name="PlusBtn" type="submit"style="position: absolute; top: 585px; left: 0px;">+</button>
+  <button class="but" name="PlusBtn" type="submit"style="position: absolute; top: 537px; left: 20px;">+</button>
 </form>
 <form action="/-" method="post">
-  <button class="but" name="MinusBtn" type="submit" style="position: absolute; top: 585px; left: 35px;">-</button>
+  <button class="but" name="MinusBtn" type="submit" style="position: absolute; top: 537px; left: 55px;">-</button>
 </form>
     <form action="/UP" method="post">
-  <button class="but" name="UpBtn" type="submit" style="position: absolute; top: 585px; left: 180px;">/\</button>
+  <button class="but" name="UpBtn" type="submit" style="position: absolute; top: 535px; left: 160px;">/\</button>
 </form>
     <form action="/RIGHT" method="post">
-  <button class="but" name="RBtn" type="submit" style="position: absolute; top: 620px; left: 215px;">></button>
+  <button class="but" name="RBtn" type="submit" style="position: absolute; top: 567px; left: 192px;">></button>
 </form>
     <form action="/DOWN" method="post">
-  <button class="but" name="DownBtn" type="submit" style="position: absolute; top: 655px; left: 180px;">\/</button>
+  <button class="but" name="DownBtn" type="submit" style="position: absolute; top: 599px; left: 160px;">\/</button>
 </form>
     <form action="/LEFT" method="post">
-  <button class="but" name="LBtn" type="submit" style="position: absolute; top: 620px; left: 145px;"><</button>
+  <button class="but" name="LBtn" type="submit" style="position: absolute; top: 567px; left: 128px;"><</button>
 </form>
     <form action="/MAP" method="post">
-  <button class="map-but" name="MapBtn" type="submit"style="position: absolute; top: 620px; left: 0px;">change map</button>
+  <button class="map-but" name="MapBtn" type="submit">change map</button>
 </form>
     <form action="/MARK" method="post">
-  <button  name="MarkBtn" type="submit" style="position: absolute; top: 700px; left: 0px;">PUT MARK</button>
+  <button  name="MarkBtn" type="submit" class="put_mark_but">PUT MARK</button>
 </form>
     <form action="/MARK_R" method="post">
-  <button  name="MarkRemoveBtn" type="submit" style="position: absolute; top: 740px; left: 0px;">REMOVE MARK</button>
+  <button  name="MarkRemoveBtn" type="submit" class="rem_mark_but">REMOVE MARK</button>
 </form>
     <form action="/CHECK" method="post">
   <button class="check-but" name="CheckBtn" type="submit" style="position: absolute; top: 540px; left: 540px;">CHECK</button>

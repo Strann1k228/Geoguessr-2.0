@@ -5,9 +5,9 @@ import os
 from random import *
 from geopy.distance import geodesic
 
-
 api_server = "http://static-maps.yandex.ru/1.x/"
-delta_l = ["0.0", "0.001", "0.002", "0.003", "0.006", "0.011", "0.021", "0.042", "0.083", "0.166", "0.332", "0.664", "1.327", "2.652", "5.295", "10.521", "20.523", "37.416"]
+delta_l = ["0.0", "0.001", "0.002", "0.003", "0.006", "0.011", "0.021", "0.042", "0.083", "0.166", "0.332", "0.664",
+           "1.327", "2.652", "5.295", "10.521", "20.523", "37.416"]
 lon = "65.996826"
 lat = "57.843589"
 delta = "37.416"
@@ -17,6 +17,10 @@ point = None
 line = None
 p_coords, r_p_coords = None, None
 img_path = "static/download.jpg"
+total = 0
+n_of_picture = 10
+checked = None
+result = None
 params = {
     "ll": ",".join([lon, lat]),
     "spn": ",".join([delta, delta]),
@@ -37,15 +41,27 @@ def create_map(pr):
         file.write(response.content)
 
 
+def conclusion(rasst):
+    global total, checked
+    max_b, distance = 100, int(rasst)
+    total_b = max_b - (distance // 100)
+    if total_b < 0:
+        total_b = 0
+    total += total_b
+    checked = True
+    print(total)
+
+
 create_map(params)
 
-
 app = Flask(__name__)
+
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
+
 
 @app.route("/-", methods=["POST"])
 def minus():
@@ -59,7 +75,8 @@ def minus():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
+
 
 @app.route("/+", methods=["POST"])
 def plus():
@@ -73,7 +90,7 @@ def plus():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/UP", methods=["POST"])
@@ -88,7 +105,7 @@ def UP():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/DOWN", methods=["POST"])
@@ -103,7 +120,7 @@ def DOWN():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/RIGHT", methods=["POST"])
@@ -118,7 +135,7 @@ def RIGHT():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/LEFT", methods=["POST"])
@@ -133,7 +150,7 @@ def LEFT():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/MAP", methods=["POST"])
@@ -149,7 +166,8 @@ def change_map():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
+
 
 @app.route("/MARK", methods=["POST"])
 def place_mark():
@@ -163,7 +181,8 @@ def place_mark():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
+
 
 @app.route("/MARK_R", methods=["POST"])
 def remove_mark():
@@ -177,39 +196,50 @@ def remove_mark():
         "pl": line
     }
     create_map(params)
-    return render_template('base.html', image_path=img_path)
+    return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/CHECK", methods=["POST"])
 def check():
-    global lat, lon, map_type, delta, point, img_path, line, p_coords, r_p_coords
+    global lat, lon, map_type, delta, point, img_path, line, p_coords, r_p_coords, checked, result
     # lat, lon, map_type, delta = "57.843589", "65.996826", "map", "37.416"
     if point is None:
-        print("!!!")
+        return render_template('base.html', image_path=img_path, result_km=f"{result} km")
     else:
-        print(point)
-        right_point = (f"{(img_path.split("/")[-1][0:-4]).split(",")[1]},{(img_path.split("/")[-1][0:-4]).split(",")[0]},comma")
+        right_point = (
+            f"{(img_path.split("/")[-1][0:-4]).split(",")[1]},{(img_path.split("/")[-1][0:-4]).split(",")[0]},comma")
         line = f"c:47AB6BF0,{point[0:-4]},{right_point[0:-6]}"
         p_coords = point[0:-4].split(",")[::-1]
         r_p_coords = right_point[0:-6].split(",")[::-1]
         print(str(geodesic(p_coords, r_p_coords)).split(".")[0])
         result = str(geodesic(p_coords, r_p_coords)).split(".")[0]
-        if point != f"{point}~{right_point}":
-            point = f"{point}~{right_point}"
+        # if point != f"{point}~{right_point}":
+        #     point = f"{point}~{right_point}"
         # params["pt"] = f"{point}~{right_point}
+        print()
+        print(point)
+        print(right_point)
+        print()
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
         "l": map_type,
-        "pt": point,
+        "pt": f"{point}~{right_point}",
         "pl": line
     }
     print(params)
     create_map(params)
+    if checked is None:
+        conclusion(result)
+    else:
+        print("already checked")
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
+
 
 @app.route("/NEXT", methods=["POST"])
 def next():
+    global point, line, checked
+    point, line, checked = None, None, None
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
@@ -253,9 +283,6 @@ def open_random_map():
         open_random_map()
     else:
         img_path = f"static/map_continents/{main_cont}/{main_cntr}/{main_image}"
-
-
-
 
 
 open_random_map()
