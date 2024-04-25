@@ -65,106 +65,63 @@ def index():
 
 @app.route("/-", methods=["POST"])
 def minus():
-    global delta
+    global delta, params
     delta = delta_l[delta_l.index(delta) + 1] if delta_l.index(delta) != len(delta_l) - 1 else delta
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["spn"] = ",".join([delta, delta])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/+", methods=["POST"])
 def plus():
-    global delta
+    global delta, params
     delta = delta_l[delta_l.index(delta) - 1] if delta_l.index(delta) != 0 else delta
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["spn"] = ",".join([delta, delta])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/UP", methods=["POST"])
 def UP():
-    global lat
+    global lat, params
     lat = str(float(lat) + float(delta) / 2) if float(lat) + float(delta) / 2 < 85 else str(-float(lat))
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["ll"] = ",".join([lon, lat])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/DOWN", methods=["POST"])
 def DOWN():
-    global lat
+    global lat, params
     lat = str(float(lat) - float(delta) / 2) if float(lat) - float(delta) / 2 > -85 else str(-float(lat))
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["ll"] = ",".join([lon, lat])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/RIGHT", methods=["POST"])
 def RIGHT():
-    global lon
+    global lon, params
     lon = str(float(lon) + float(delta) / 2) if float(lon) + float(delta) < 179 else str(-float(lon))
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["ll"] = ",".join([lon, lat])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/LEFT", methods=["POST"])
 def LEFT():
-    global lon
+    global lon, params
     lon = str(float(lon) - float(delta) / 2) if float(lon) - float(delta) > -179 else str(-float(lon))
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["ll"] = ",".join([lon, lat])
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/MAP", methods=["POST"])
 def change_map():
-    global map_type
+    global map_type, params
     map_type = m_types[(m_types.index(map_type) + 1) % 2]
-    print(map_type)
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["l"] = map_type
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
@@ -173,28 +130,17 @@ def change_map():
 def place_mark():
     global point, params
     point = f"{params["ll"]},org"
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["pt"] = point
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
 
 @app.route("/MARK_R", methods=["POST"])
 def remove_mark():
-    global point, line
+    global point, line, params
     point, line = None, None
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["pt"] = point
+    params["pl"] = line
     create_map(params)
     return render_template('base.html', image_path=img_path, result_km=f"{result} km")
 
@@ -211,15 +157,10 @@ def check():
         line = f"c:47AB6BF0,{point[0:-4]},{right_point[0:-6]}"
         p_coords = point[0:-4].split(",")[::-1]
         r_p_coords = right_point[0:-6].split(",")[::-1]
-        print(str(geodesic(p_coords, r_p_coords)).split(".")[0])
         result = str(geodesic(p_coords, r_p_coords)).split(".")[0]
         # if point != f"{point}~{right_point}":
         #     point = f"{point}~{right_point}"
         # params["pt"] = f"{point}~{right_point}
-        print()
-        print(point)
-        print(right_point)
-        print()
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
@@ -240,13 +181,8 @@ def check():
 def next():
     global point, line, checked
     point, line, checked = None, None, None
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": map_type,
-        "pt": point,
-        "pl": line
-    }
+    params["pt"] = point
+    params["pl"] = line
     create_map(params)
     open_random_map()
     return render_template('base.html', image_path=img_path)
@@ -263,22 +199,17 @@ def open_random_map():
         for file in os.listdir(f"static/map_continents/{i}"):
             countries.append(file)
         cont_and_countr[i] = countries
-    print(cont_and_countr)
     # выводим рандомный континент
     main_cont = list(cont_and_countr.keys())[randint(0, len(list(cont_and_countr.keys())) - 1)]
-    print(main_cont)
     cntrs = []
     for cntr in os.listdir(f"static/map_continents/{main_cont}"):
         cntrs.append(cntr)
     # выводим рандомную страну, находящуюся на континенте
     main_cntr = cntrs[randint(0, len(cntrs)) - 1]
-    print(main_cntr)
     images = []
     for img in os.listdir(f"static/map_continents/{main_cont}/{main_cntr}"):
         images.append(img)
     main_image = images[randint(0, len(images)) - 1]
-    print(main_image)
-    print(f"static/map_continents/{main_cont}/{main_cntr}/{main_image}")
     if f"static/map_continents/{main_cont}/{main_cntr}/{main_image}" == img_path:
         open_random_map()
     else:
