@@ -13,9 +13,7 @@ lat = "57.843589"
 delta = "37.416"
 map_type = "map"
 m_types = ["map", "sat"]
-point = None
-line = None
-p_coords, r_p_coords = None, None
+p_coords, r_p_coords, point, line = None, None, None, None
 img_path = "static/download.jpg"
 total = 0
 n_of_picture = 10
@@ -158,9 +156,6 @@ def check():
         p_coords = point[0:-4].split(",")[::-1]
         r_p_coords = right_point[0:-6].split(",")[::-1]
         result = str(geodesic(p_coords, r_p_coords)).split(".")[0]
-        # if point != f"{point}~{right_point}":
-        #     point = f"{point}~{right_point}"
-        # params["pt"] = f"{point}~{right_point}
     params = {
         "ll": ",".join([lon, lat]),
         "spn": ",".join([delta, delta]),
@@ -168,7 +163,6 @@ def check():
         "pt": f"{point}~{right_point}",
         "pl": line
     }
-    print(params)
     create_map(params)
     if checked is None:
         conclusion(result)
@@ -192,28 +186,28 @@ def open_random_map():
     global img_path
     # создание словаря стран и континентов
     continents, cont_and_countr = [], {}
-    for file in os.listdir("static/map_continents"):
+    for file in os.listdir("static/map_pictures"):
         continents.append(file)
     for i in continents:
         countries = []
-        for file in os.listdir(f"static/map_continents/{i}"):
+        for file in os.listdir(f"static/map_pictures/{i}"):
             countries.append(file)
         cont_and_countr[i] = countries
     # выводим рандомный континент
     main_cont = list(cont_and_countr.keys())[randint(0, len(list(cont_and_countr.keys())) - 1)]
     cntrs = []
-    for cntr in os.listdir(f"static/map_continents/{main_cont}"):
+    for cntr in os.listdir(f"static/map_pictures/{main_cont}"):
         cntrs.append(cntr)
     # выводим рандомную страну, находящуюся на континенте
     main_cntr = cntrs[randint(0, len(cntrs)) - 1]
     images = []
-    for img in os.listdir(f"static/map_continents/{main_cont}/{main_cntr}"):
+    for img in os.listdir(f"static/map_pictures/{main_cont}/{main_cntr}"):
         images.append(img)
     main_image = images[randint(0, len(images)) - 1]
-    if f"static/map_continents/{main_cont}/{main_cntr}/{main_image}" == img_path:
+    if f"static/map_pictures/{main_cont}/{main_cntr}/{main_image}" == img_path:
         open_random_map()
     else:
-        img_path = f"static/map_continents/{main_cont}/{main_cntr}/{main_image}"
+        img_path = f"static/map_pictures/{main_cont}/{main_cntr}/{main_image}"
 
 
 open_random_map()
